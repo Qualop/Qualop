@@ -107,6 +107,17 @@ def shape(kind, t):
     return f'<polygon points="{pts}" fill="url(#g-default)"/><polygon points="{pts}" fill="url(#g-glow)"/>'
 
 ROW_A = ["square", "cross", "plus", "arch", "dome", "stack", "triangle", "capsule", "circle"]
+
+def squircle(cx, cy, r, n=5, steps=96):
+    """Superellipse |x|^n + |y|^n = r^n as an SVG path (iOS-style rounded square)."""
+    pts = []
+    for i in range(steps):
+        a = 2 * math.pi * i / steps
+        c, s = math.cos(a), math.sin(a)
+        x = cx + r * math.copysign(abs(c) ** (2 / n), c)
+        y = cy + r * math.copysign(abs(s) ** (2 / n), s)
+        pts.append(f"{x:.2f} {y:.2f}")
+    return "M" + " L".join(pts) + " Z"
 ROW_B = ["steps", "asterisk", "diamond", "ring", "square", "cross", "plus", "arch", "dome", "stack"]
 
 W, H = 1280, 480
@@ -152,8 +163,8 @@ def build(name):
   <text x="68" y="176" fill="{t["label"]}" font-size="72" font-weight="800" letter-spacing="-2">Sungwoo Jang</text>
   <text x="72" y="230" fill="{t["neutral"]}" font-size="30" font-weight="500" letter-spacing="-0.4">Semiconductor research, automated with AI agents.</text>
   <g transform="translate({W - 72 - 64} 56)">
-    <rect width="64" height="64" rx="14" fill="{t["label"]}"/>
-    <text x="9" y="45" fill="{t["bg"]}" font-family="'Arial Black', Arial, Helvetica, sans-serif" font-size="30" font-weight="900">Sj.</text>
+    <path d="{squircle(32, 32, 31)}" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
+    <text x="32" y="42" text-anchor="middle" fill="#000000" font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="900" letter-spacing="-0.5">Sj.</text>
   </g>
   <g mask="url(#edge)">{row_a}{row_b}</g>
 </g>
